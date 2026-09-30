@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Stage Secure Access Code Recognition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page">
+
+  <!-- 1. HEADER -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="brand">
+        <span class="brand__title">Multi-Stage Secure Access Code Recognition</span>
+      </div>
+      <div id="system-status" class="status-pill is-idle">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-text">No code checked yet</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- 2. HERO -->
+    <section class="hero">
+      <h1>Validate an access code through three computational models</h1>
+      <p class="hero__lede">
+        Every access code is checked by a Finite Automaton, a Pushdown Automaton, and a
+        Turing Machine, one after another. Each model contributes something the one before
+        it structurally can't, and together they decide whether a code is accepted.
+      </p>
+
+      <div class="flow-strip" aria-hidden="true">
+        <span class="flow-node flow-node--endpoint">Input</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-node">FA</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-node">PDA</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-node">TM</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-node flow-node--endpoint">Result</span>
+      </div>
+    </section>
+
+    <!-- 3. LANGUAGE -->
+    <section class="language">
+      <div class="language__card">
+        <span class="language__eyebrow">Formal language</span>
+        <p class="language__formula">
+          L&nbsp;=&nbsp;{&nbsp;w&nbsp;#n#&nbsp;w<sup>R</sup>&nbsp;&nbsp;|&nbsp;&nbsp;w&nbsp;&isin;&nbsp;{A,B}<span class="sup">+</span>,&nbsp;&nbsp;n&nbsp;&isin;&nbsp;{0..9}<span class="sup">+</span>&nbsp;}
+        </p>
+        <p class="language__explain">
+          An access code is a block of letters, a separator, a block of digits, a second
+          separator, and a final block of letters. It's only valid when that final block is
+          the exact reverse of the first. <code>AB#123#BA</code> qualifies because
+          <code>BA</code> reverses <code>AB</code>; <code>AB#123#AB</code> does not.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. VALIDATOR -->
+    <section class="validator">
+      <h2>Test an access code</h2>
+      <p class="validator__hint">Type a code, or choose one of the sample cases below.</p>
+
+      <form id="code-form" class="validator__form">
+        <input
+          id="code-input"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="AB#123#BA"
+        >
+        <button type="submit">Run validation</button>
+      </form>
+
+      <div class="presets-row">
+        <span class="presets-label">Sample codes</span>
+        <div id="presets" class="presets"></div>
+      </div>
+    </section>
+
+    <!-- 5. PROCESSING PIPELINE -->
+    <section class="pipeline">
+      <h2>How a code moves through the system</h2>
+      <p class="pipeline__hint">
+        Each stage only runs once the one before it has passed. A rejection anywhere in the
+        chain stops the process immediately.
+      </p>
+
+      <div class="pipeline__rail">
+
+        <article id="stage-fa" class="stage is-pending">
+          <div class="stage-node">01</div>
+          <div class="stage-content">
+            <div class="stage-header">
+              <div class="stage-title">
+                <h3>Finite Automaton</h3>
+                <p>Confirms the basic shape: letters, separator, digits, separator, letters.</p>
+              </div>
+              <span class="stage-status">Waiting</span>
+            </div>
+            <div class="stage-body"></div>
+          </div>
+        </article>
+
+        <article id="stage-pda" class="stage is-pending">
+          <div class="stage-node">02</div>
+          <div class="stage-content">
+            <div class="stage-header">
+              <div class="stage-title">
+                <h3>Pushdown Automaton</h3>
+                <p>Pushes the first letter block onto a stack, then pops it against the final block.</p>
+              </div>
+              <span class="stage-status">Waiting</span>
+            </div>
+            <div class="stage-body"></div>
+          </div>
+        </article>
+
+        <article id="stage-tm" class="stage is-pending">
+          <div class="stage-node">03</div>
+          <div class="stage-content">
+            <div class="stage-header">
+              <div class="stage-title">
+                <h3>Turing Machine</h3>
+                <p>Independently re-scans the tape and performs the final verification.</p>
+              </div>
+              <span class="stage-status">Waiting</span>
+            </div>
+            <div class="stage-body"></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- 6. RESULT -->
+    <section id="verdict" class="verdict is-idle">
+      <span class="verdict-icon" aria-hidden="true"></span>
+      <span class="verdict-message">Enter an access code above to begin validation.</span>
+    </section>
+
+    <!-- 7. EDUCATIONAL SECTION -->
+    <section class="explainer">
+      <h2>What each model contributes</h2>
+      <div class="explainer__grid">
+        <div class="explainer__item">
+          <span class="explainer__index">01</span>
+          <h3>Finite Automaton</h3>
+          <p>
+            Has no memory beyond its current state, so it can only recognize patterns that
+            don't depend on earlier input. That makes it well suited to checking the code's
+            basic shape, but unable to verify a relationship like reversal.
+          </p>
+        </div>
+        <div class="explainer__item">
+          <span class="explainer__index">02</span>
+          <h3>Pushdown Automaton</h3>
+          <p>
+            Adds a stack, giving it just enough memory to remember the first letter block and
+            compare it against the last one symbol by symbol. This is exactly the capability a
+            Finite Automaton is missing.
+          </p>
+        </div>
+        <div class="explainer__item">
+          <span class="explainer__index">03</span>
+          <h3>Turing Machine</h3>
+          <p>
+            The most general of the three models. Rather than trusting the earlier stages, it
+            re-derives the code's structure directly from the tape and performs its own
+            independent pass before the final decision is made.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 8. FOOTER -->
+  <footer class="site-footer">
+    <p>Built to show how a finite automaton, a pushdown automaton, and a Turing machine can work as one pipeline.</p>
+  </footer>
+
+</div>
+
+<script src="js/finiteAutomaton.js"></script>
+<script src="js/pushdownAutomaton.js"></script>
+<script src="js/turingMachine.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
